@@ -1,6 +1,6 @@
 {
   "name": "newrelic-vertica",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "New Relic instrumentation for Vertica",
   "main": "index.js",
   "scripts": {
