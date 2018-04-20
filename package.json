@@ -4,8 +4,14 @@
   "description": "New Relic instrumentation for Vertica",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest --coverageDirectory=test/reports/unit --coverage=true"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "jest": "^22.4.3",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.0.0"
+  }
 }
