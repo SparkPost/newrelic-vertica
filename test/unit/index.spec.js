@@ -1,9 +1,4 @@
 'use strict';
-const chai = require('chai');
-const expect = chai.expect;
-const sinon = require('sinon');
-
-chai.use(require('sinon-chai'));
 
 describe('New Relic Instrumentation for Vertica', () => {
   let shim
@@ -12,17 +7,17 @@ describe('New Relic Instrumentation for Vertica', () => {
 
 beforeEach(function() {
   shim = {
-    isWrapped: sinon.stub().returns(false),
+    isWrapped: jest.fn().mockReturnValue(false),
     LAST: -1,
     logger: {
-      debug: sinon.stub(),
-      trace: sinon.stub()
+      debug: jest.fn(),
+      trace: jest.fn()
     },
-    recordQuery: sinon.stub(),
-    setDatastore: sinon.stub(),
-    setInternalProperty: sinon.stub(),
-    unwrap: sinon.stub(),
-    wrapReturn: sinon.stub()
+    recordQuery: jest.fn(),
+    setDatastore: jest.fn(),
+    setInternalProperty: jest.fn(),
+    unwrap: jest.fn(),
+    wrapReturn: jest.fn()
   };
 
   vertica = 'our vertica library';
@@ -32,8 +27,8 @@ beforeEach(function() {
 
 it('should setDatastore and wrap connect', function() {
   instrument(shim, vertica);
-  expect(shim.setDatastore).to.have.been.calledWith('Vertica');
-  expect(shim.wrapReturn).to.have.been.calledWith(vertica, 'connect');
+  expect(shim.setDatastore).toHaveBeenCalledWith('Vertica');
+  expect(shim.wrapReturn).toHaveBeenCalledWith(vertica, 'connect', expect.any(Function));
 });
 
 describe('wrapConnect', function() {
@@ -43,48 +38,48 @@ describe('wrapConnect', function() {
   beforeEach(function() {
     connection = {};
     instrument(shim, vertica);
-    wrapConnect = shim.wrapReturn.lastCall.args[2];
+    wrapConnect = shim.wrapReturn.mock.calls[0][2];
   });
 
   it('should not record if connection is false', function() {
     connection = false;
     wrapConnect(shim, null, null, false);
-    expect(shim.logger.debug).to.have.been.calledWith({
+    expect(shim.logger.debug).toHaveBeenCalledWith({
       queriable: false,
       query: false,
       isWrapped: false
     }, 'Not wrappying queriable');
-    expect(shim.recordQuery).to.have.not.been.called;
+    expect(shim.recordQuery).toHaveNotBeenCalled;
   });
 
 
   it('should not record if query is missing from connection', function() {
     connection = {};
     wrapConnect(shim, null, null, {});
-    expect(shim.logger.debug).to.have.been.calledWith({
+    expect(shim.logger.debug).toHaveBeenCalledWith({
       queriable: true,
       query: false,
       isWrapped: false
     }, 'Not wrappying queriable');
-    expect(shim.recordQuery).to.have.not.been.called;
+    expect(shim.recordQuery).toHaveNotBeenCalled;
   });
 
   it('should not record if query is already wrapped', function() {
     connection = { query: 'vertica query' };
-    shim.isWrapped.returns(true);
+    shim.isWrapped.mockReturnValue(true);
     wrapConnect(shim, null, null, connection);
-    expect(shim.logger.debug).to.have.been.calledWith({
+    expect(shim.logger.debug).toHaveBeenCalledWith({
       queriable: true,
       query: true,
       isWrapped: true
     }, 'Not wrappying queriable');
-    expect(shim.recordQuery).to.have.not.been.called;
+    expect(shim.recordQuery).toHaveNotBeenCalled;
   });
 
   it('should record query', function() {
     connection = { query: 'vertica query' };
     wrapConnect(shim, null, null, connection);
-    expect(shim.recordQuery).to.have.been.calledWith(sinon.match.any, 'query');
+    expect(shim.recordQuery).toHaveBeenCalledWith({}, 'query', expect.any(Function));
   });
 });
 
@@ -96,16 +91,16 @@ describe('describeQuery', function() {
   beforeEach(function() {
     connection = { query: 'a vertica query' };
     instrument(shim, vertica);
-    wrapConnect = shim.wrapReturn.lastCall.args[2];
+    wrapConnect = shim.wrapReturn.mock.calls[0][2];
 
     wrapConnect(shim, null, null, connection);
 
-    describeQuery = shim.recordQuery.lastCall.args[2].bind(connection);
+    describeQuery = shim.recordQuery.mock.calls[0][2].bind(connection);
   });
 
   it('should describe the query', function() {
     const result = describeQuery(shim, null, null, ['delete * from users;']);
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       stream: true,
       query: 'delete * from users;',
       callback: shim.LAST,
@@ -116,7 +111,7 @@ describe('describeQuery', function() {
       },
       record: true
     });
-    expect(shim.logger.trace).to.have.been.calledWith('No query config detected, not collecting db instance data');
+    expect(shim.logger.trace).toHaveBeenCalledWith('No query config detected, not collecting db instance data');
 
   });
 
@@ -127,7 +122,7 @@ describe('describeQuery', function() {
       port: 1234
     };
     const result = describeQuery(shim, null, null, ['delete * from users;']);
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       stream: true,
       query: 'delete * from users;',
       callback: shim.LAST,
@@ -138,7 +133,7 @@ describe('describeQuery', function() {
       },
       record: true
     });
-    expect(shim.setInternalProperty).to.have.been.calledWith(connection, '__NR_databaseName', 'momo');
+    expect(shim.setInternalProperty).toHaveBeenCalledWith(connection, '__NR_databaseName', 'momo');
   });
 
 });

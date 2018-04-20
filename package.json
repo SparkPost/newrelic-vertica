@@ -10,10 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "chai": "^4.1.2",
     "jest": "^22.4.3",
-    "jest-junit": "^3.6.0",
-    "sinon": "^4.5.0",
-    "sinon-chai": "^3.0.0"
+    "jest-junit": "^3.6.0"
   }
 }
