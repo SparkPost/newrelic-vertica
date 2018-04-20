@@ -3,3 +3,4 @@ test/reports
 .idea
 .node-version
 junit.xml
+package-lock.json
