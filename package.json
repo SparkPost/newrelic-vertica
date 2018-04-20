@@ -4,7 +4,8 @@
   "description": "New Relic instrumentation for Vertica",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest --coverageDirectory=test/reports/unit --coverage=true"
+    "test": "npx jest --watch",
+    "test-ci": "npx jest --ci --coverage=true"
   },
   "author": "",
   "license": "ISC",

@@ -33,4 +33,4 @@ If you are a collaborator, when you want release a new version, follow these ste
 7. Create a new [Github Release](https://github.com/SparkPost/node-sparkpost/releases) using the new tag. Copy release
    notes from the [CHANGELOG.md](CHANGELOG.md).
 
-[1]: Coming soon.
+[1]: https://travis-ci.org/SparkPost/newrelic-vertica
