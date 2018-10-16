@@ -5,6 +5,7 @@ function instrumentVertica(shim, vertica) {
 
   shim.wrapReturn(vertica, 'connect', wrapConnect);
   function wrapConnect(shim, fn, fnName, connection) {
+    /* eslint max-params: ["error", 4] */
     shim.logger.debug('Wrapping Connection#query');
     if (wrapQueriable(shim, connection)) {
       const connProto = Object.getPrototypeOf(connection);
@@ -14,12 +15,16 @@ function instrumentVertica(shim, vertica) {
   }
 
   function wrapQueriable(shim, queriable) {
+    /* eslint complexity: ["error", 6] */
     if (!queriable || !queriable.query || shim.isWrapped(queriable.query)) {
-      shim.logger.debug({
-        queriable: !!queriable,
-        query: !!(queriable && queriable.query),
-        isWrapped: !!(queriable && shim.isWrapped(queriable.query))
-      }, 'Not wrappying queriable');
+      shim.logger.debug(
+        {
+          queriable: !!queriable,
+          query: !!(queriable && queriable.query),
+          isWrapped: !!(queriable && shim.isWrapped(queriable.query))
+        },
+        'Not wrappying queriable'
+      );
       return false;
     }
 
@@ -30,31 +35,38 @@ function instrumentVertica(shim, vertica) {
     return true;
   }
 
-
   function describeQuery(shim, queryFn, fnName, args) {
+    /* eslint max-params: ["error", 4] */
     shim.logger.trace('Recording query');
     const extractedArgs = extractQueryArgs(shim, args);
 
     // Pull out instance attributes.
     const parameters = getInstanceParameters(shim, this, extractedArgs.query);
 
-    shim.logger.trace({
-      query: !!extractedArgs.query,
-      callback: !!extractedArgs.callback,
-      parameters: !!parameters
-    }, 'Query segment descriptor');
+    shim.logger.trace(
+      {
+        query: !!extractedArgs.query,
+        callback: !!extractedArgs.callback,
+        parameters: !!parameters
+      },
+      'Query segment descriptor'
+    );
 
     return {
       stream: true,
       query: extractedArgs.query,
       callback: extractedArgs.callback,
-      parameters: parameters,
+      parameters,
       record: true
     };
   }
 
   function getInstanceParameters(shim, queryable) {
-    const parameters = { host: null, port_path_or_id: null, database_name: null };
+    const parameters = {
+      host: null,
+      port_path_or_id: null,
+      database_name: null
+    };
     const conf = queryable.connectionOptions;
     let databaseName = queryable.__NR_databaseName || null;
     if (conf) {
@@ -63,7 +75,9 @@ function instrumentVertica(shim, vertica) {
       parameters.host = conf.host;
       parameters.port_path_or_id = conf.port;
     } else {
-      shim.logger.trace('No query config detected, not collecting db instance data');
+      shim.logger.trace(
+        'No query config detected, not collecting db instance data'
+      );
     }
 
     storeDatabaseName(shim, queryable);
