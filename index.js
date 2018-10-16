@@ -5,6 +5,7 @@ function instrumentVertica(shim, vertica) {
 
   shim.wrapReturn(vertica, 'connect', wrapConnect);
   function wrapConnect(shim, fn, fnName, connection) {
+    /* eslint max-params: ["error", 4] */
     shim.logger.debug('Wrapping Connection#query');
     if (wrapQueriable(shim, connection)) {
       const connProto = Object.getPrototypeOf(connection);
@@ -35,6 +36,7 @@ function instrumentVertica(shim, vertica) {
   }
 
   function describeQuery(shim, queryFn, fnName, args) {
+    /* eslint max-params: ["error", 4] */
     shim.logger.trace('Recording query');
     const extractedArgs = extractQueryArgs(shim, args);
 
