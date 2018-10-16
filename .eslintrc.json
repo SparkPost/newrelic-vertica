@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "extends": "sparkpost/api",
+  "rules": {
+    "new-cap": "off",
+    "max-params": ["error", 5]
+  },
+  "plugins": ["jest"],
+  "env": {
+    "jest/globals": true
+  }
+}

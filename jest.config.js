@@ -1,4 +1,6 @@
+'use strict';
+
 module.exports = {
-  "coverageDirectory": "test/reports/unit",
-  "testResultsProcessor": "./node_modules/jest-junit"
+  coverageDirectory: 'test/reports/unit',
+  testResultsProcessor: './node_modules/jest-junit'
 };

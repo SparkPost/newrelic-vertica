@@ -4,13 +4,35 @@
   "description": "New Relic instrumentation for Vertica",
   "main": "index.js",
   "scripts": {
+    "make-me-pretty": "prettier-eslint \"**/*.js\" --write",
+    "lint": "eslint . --fix",
     "test": "npx jest --watch",
     "test-ci": "npx jest --ci --coverage=true"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "npm run make-me-pretty",
+      "npm run lint",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "auditmated"
+    }
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^22.4.3",
-    "jest-junit": "^3.6.0"
+    "auditmated": "^0.1.2",
+    "eslint": "^5.7.0",
+    "eslint-config-sparkpost": "^1.10.1",
+    "eslint-plugin-jest": "^21.25.1",
+    "husky": "^1.1.2",
+    "jest": "^23.6.0",
+    "jest-junit": "^3.6.0",
+    "lint-staged": "^7.3.0",
+    "prettier-eslint-cli": "^4.7.1"
   }
 }
