@@ -41,7 +41,7 @@ function instrumentVertica(shim, vertica) {
     const extractedArgs = extractQueryArgs(shim, args);
 
     // Pull out instance attributes.
-    const parameters = getInstanceParameters(shim, this, extractedArgs.query);
+    const parameters = getInstanceParameters(shim, extractedArgs.query);
 
     shim.logger.trace(
       {
@@ -70,8 +70,7 @@ function instrumentVertica(shim, vertica) {
     const conf = queryable.connectionOptions;
     let databaseName = queryable.__NR_databaseName || null;
     if (conf) {
-      parameters.database_name = databaseName = databaseName || conf.database;
-
+      parameters.database_name = databaseName ? databaseName : conf.database;
       parameters.host = conf.host;
       parameters.port_path_or_id = conf.port;
     } else {
