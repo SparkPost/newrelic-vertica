@@ -41,7 +41,7 @@ function instrumentVertica(shim, vertica) {
     const extractedArgs = extractQueryArgs(shim, args);
 
     // Pull out instance attributes.
-    const parameters = getInstanceParameters(shim, extractedArgs.query);
+    const parameters = getInstanceParameters(shim, this, extractedArgs.query);
 
     shim.logger.trace(
       {
