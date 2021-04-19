@@ -61,7 +61,7 @@ function instrumentVertica(shim, vertica) {
     };
   }
 
-  function getInstanceParameters(shim, this, queryable) {
+  function getInstanceParameters(shim, queryable) {
     const parameters = {
       host: null,
       port_path_or_id: null,
